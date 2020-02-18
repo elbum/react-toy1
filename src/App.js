@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
+import TOC from './components/TOC';
+import Subject from './components/Subject'
+import Content from './components/Content'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      subject:{title:'WEB',sub:'World wide Web state'},
+      contents:[
+        {id:1,title:'HTML',desc:'HTML is hypertect'},
+        {id:2,title:'CSS',desc:'CSS is for design'},
+        {id:3,title:'Javascript',desc:'Javascript is for interactive'},
+      ],
+    }
+
+  }
+
+
+  render() {
+    
+    return (<div className="App">
+      <Subject tittle={this.state.subject.title} sub={this.state.subject.sub}>
+        hello sub
+      </Subject>
+      <Subject tittle="REACT" sub="for UIUX!!!">
+      </Subject>
+
+      <br></br><br></br>
+      Hello React
+      <TOC data={this.state.contents}></TOC>
+      <Content title="HTML Props." sub="Props. HTML is hypertext markup Language."></Content>
+    </div>)
+  }
 }
 
 export default App;
