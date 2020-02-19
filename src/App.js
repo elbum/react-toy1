@@ -8,7 +8,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      mode: "welcome",
+      mode: "read",
       welcome: { title: "Welcome", desc: "Hello, React!~!" },
       subject: { title: 'WEB', sub: 'World wide Web state' },
       contents: [
@@ -34,9 +34,16 @@ class App extends Component {
     }
 
     return (<div className="App">
-      <Subject tittle={this.state.subject.title} sub={this.state.subject.sub}>
-        hello sub
+      <Subject 
+        tittle={this.state.subject.title} 
+        sub={this.state.subject.sub}
+        onChangeXPage={function(){
+          this.setState({mode:'welcome'});
+          alert('hihihi');
+        }.bind(this)}>
+
       </Subject>
+
       <Subject tittle="REACT" sub="for UIUX!!!">
       </Subject>
 
