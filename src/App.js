@@ -5,6 +5,9 @@ import Subject from './components/Subject'
 import ReadContent from './components/ReadContent'
 import CreateContent from './components/CreateContent'
 import Control from './components/Control'
+import UpdateContent from './components/UpdateContent'
+
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -12,7 +15,7 @@ class App extends Component {
 
     this.state = {
       // mode: "read",
-      mode: "create",
+      mode: "welcome",
       selected_content_id: 2,
       welcome: { title: "Welcome", desc: "Hello, React!~!" },
       subject: { title: 'WEB', sub: 'World wide Web state' },
@@ -25,8 +28,17 @@ class App extends Component {
 
   }
 
-
-  render() {
+  getReadContent(){
+    var i = 0;
+    while (i < this.state.contents.length) {
+      var data = this.state.contents[i];
+      if (data.id === this.state.selected_content_id) {
+        return data;
+      }
+      i = i + 1;
+    }
+  }
+  getContent(){
     var _title, _desc, _article;
     if (this.state.mode === "welcome") {
       _title = this.state.welcome.title;
@@ -34,20 +46,9 @@ class App extends Component {
       _article = <ReadContent title={_title} desc={_desc}></ReadContent>
 
     } else if (this.state.mode === "read") {
-      var i = 0;
-      while (i < this.state.contents.length) {
-        var data = this.state.contents[i];
-        if (data.id === this.state.selected_content_id) {
-          _title = data.title;
-          _desc = data.desc;
-          break;
-        }
-        i = i + 1;
+      var _content = this.getReadContent();
 
-      }
-      // _title = this.state.contents[0].title;
-      // _desc = this.state.contents[0].desc;
-      _article = <ReadContent title={_title} desc={_desc}></ReadContent>
+      _article = <ReadContent title={_content.title} desc={_content.desc}></ReadContent>
 
     } else if (this.state.mode === "create") {
       _article = <CreateContent onSubmit={function (_title, _desc) {
@@ -63,7 +64,33 @@ class App extends Component {
 
 
       }.bind(this)}></CreateContent>
+    } else if (this.state.mode === "update") {
+      _content = this.getReadContent();
+
+      _article = <UpdateContent data={_content} onSubmit={
+        function(_id,_title,_desc){
+          
+          var _contents = Array.from(this.state.contents)
+          var i = 0;
+          console.log(_id,_title,_desc);
+          while(i<_contents.length){
+            if(_contents[i].id === _id) {
+              _contents[i] = {id:_id , title:_title, desc:_desc};
+              break;
+            }
+            i=i+1;
+          }
+          this.setState({
+            contents:_contents
+          })
+        }.bind(this)}></UpdateContent>
     }
+    return _article
+  }
+
+
+  render() {
+    
 
     return (<div className="App">
       <Subject
@@ -94,11 +121,31 @@ class App extends Component {
       </ul>
       <Control onChangeMode={function (_mode) {
         console.log("MODE = ", _mode);
-        this.setState({ mode: _mode })
-      }.bind(this)}></Control>
+        if(_mode === 'delete'){
+          if(window.confirm()){
+            var _content = Array.from(this.state.contents);
+            var i=0;
+            while ( i<_content.length){
+              if(_content[i].id===this.state.selected_content_id){
+                _content.splice(i,1); // 발견한 아이디부터 n개 지움
+                break;
+              }
+              this.setState({
+                mode:"welcome",
+                contents:_content});
+              alert('deleted');
+              
+              i=i+1;
+              
+            }
+          } 
 
-      {_article};
-      {/* <ReadContent title={_title} sub={_desc}></ReadContent> */}
+        } else {
+        this.setState({ mode: _mode })
+      }}.bind(this)}></Control>
+
+      {this.getContent()}
+      
 
     </div >)
   }
